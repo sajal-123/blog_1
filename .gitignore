@@ -1,0 +1,51 @@
+# Ignore Node modules for backend
+/backend/node_modules/
+
+# Ignore build artifacts for backend (if any)
+/backend/build/
+/backend/dist/
+
+# Ignore environment variables file for backend (if any)
+/backend/.env
+
+# Ignore any logs or runtime data for backend
+/backend/*.log
+
+# Ignore Node modules for frontEnd
+/frontEnd/node_modules/
+
+# Ignore build artifacts for frontEnd (if any)
+/frontEnd/dist/
+/frontEnd/build/
+
+# Ignore Vite cache
+/frontEnd/.vite/
+
+# Ignore environment variables file for frontEnd (if any)
+/frontEnd/.env
+
+# Ignore any logs or runtime data for frontEnd
+/frontEnd/*.log
+
+# Ignore editor-specific files
+.vscode/
+.idea/
+
+# Ignore OS generated files
+.DS_Store
+Thumbs.db
+
+# Ignore npm debug log
+npm-debug.log*
+
+# Ignore Yarn error log
+yarn-error.log*
+
+# Ignore any backup files
+*.bak
+
+# Ignore IDE-specific files
+*.iml
+
+# Ignore any local configuration file
+*.local
