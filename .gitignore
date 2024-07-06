@@ -4,6 +4,7 @@
 # Ignore build artifacts for backend (if any)
 /backend/build/
 /backend/dist/
+/backend/uploads/
 
 # Ignore environment variables file for backend (if any)
 /backend/.env
@@ -49,3 +50,5 @@ yarn-error.log*
 
 # Ignore any local configuration file
 *.local
+
+
