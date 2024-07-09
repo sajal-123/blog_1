@@ -11,12 +11,14 @@ function Article({ image, className }: { image: any, className: string }) {
                 <h5 className="mb-2 text-2xl font-bold tracking-tight text-dark-soft md:text-2xl ">Noteworthy technology acquisitions 2021</h5>
                 <p className="mb-3 font-normal text-gray-700 dark:text-gray-500">Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.</p>
                 <div className='flex justify-between items-end'>
+                    <div className='flex gap-2 items-center'>
                     <img src={image} alt="" className=' rounded-full aspect-square h-8' />
                     <div>
-                        <h3>name is</h3>
-                        <p className='italic text-xs text-dark-light flex gap-2'>
-                            <span className=' rounded-full bg-green-500 h-4 w-4 items-center flex justify-center'><TiTickOutline /></span>
+                        <h3 className='ml-2'>name is</h3>
+                        <p className='italic text-xs text-dark-light flex gap-1'>
+                            <span className=' rounded-full bg-green-500 h-3 w-3 items-center flex justify-center'><TiTickOutline /></span>
                             Is Verified</p>
+                    </div>
                     </div>
                     <div className="date font-bold text-dark-light text-sm">
                         22-May

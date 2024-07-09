@@ -1,13 +1,15 @@
 import express from "express";
-import { Login, SignUp, userProfile,UpdateUser } from "../controller/User.controller.js";
-import { AuthGraud } from "../middleware/Auth.middleware.js";
+import { SignUp, Login, userProfile, updateProfile, updatePictureProfile, ForgetPassword } from "../controller/User.controller.js";
+import { AuthGuard } from "../middleware/Auth.middleware.js";
 const router = express.Router();
 
 // Register a new user
 router.post("/signup", SignUp);
 router.post("/login", Login);
-router.post("/profile", AuthGraud, userProfile);
-router.post("/updateProfile", AuthGraud, UpdateUser);
+router.post("/profile", AuthGuard, userProfile);
+router.post("/updateProfile", AuthGuard, updateProfile);
+router.post("/update-picture-Profile", AuthGuard, updatePictureProfile);
+router.post("/forgetPassword", ForgetPassword);
 
 // Additional user routes can be added here
 

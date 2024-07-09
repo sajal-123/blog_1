@@ -1,10 +1,13 @@
-import React, {  useState ,useContext } from 'react';
-import { react } from '../constants/index';
+import React, {  useContext } from 'react';
 import { CiMenuFries } from "react-icons/ci";
 import { IoMdClose } from "react-icons/io";
+import { react } from '../constants/index'
 import { MdKeyboardArrowDown } from "react-icons/md";
 import NavContext from '../context/NavContext'
-// import './'
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
+import { setUserData } from '../store/reducers/UserReducer';
 
 interface NavItems {
     title: string;
@@ -37,9 +40,9 @@ const NavLinks: React.FC<NavItems & { index: number }> = ({ title, link, type, i
             </a>
             {items && <div className='hidden transition-all duration-400 pt-4 absolute md:bottom-[50%] md:right-0 bottom-full max-md:left-full transform translate-y-full group-hover:block w-max'>
                 <ul className='flex flex-col shadow-lg overflow-hidden rounded-lg'>{
-                    items.map((page) => {
+                    items.map((page, i) => {
                         return (
-                            <a href="/" className='hover:bg-dark-hard hover:text-white px-4 py-2 text-gray-700 lg:text-dark-soft'>{page}</a>
+                            <a key={i} href="/" className='hover:bg-dark-hard hover:text-white px-4 py-2 text-gray-700 lg:text-dark-soft'>{page}</a>
                         )
                     })}</ul>
             </div>}
@@ -48,19 +51,20 @@ const NavLinks: React.FC<NavItems & { index: number }> = ({ title, link, type, i
 };
 
 const Header: React.FC = () => {
+    const dispatch = useDispatch();
+    const userData = useSelector(state => state.user);
+    const navigate = useNavigate();
 
-    const {isNavbarVisible,setIsNavbarVisible}=useContext(NavContext)
+    const { isNavbarVisible, setIsNavbarVisible } = useContext(NavContext)
 
     const handleNavbar = () => {
         setIsNavbarVisible(!isNavbarVisible);
     };
-
-    const [animate, setAnimate] = useState(false);
-
-    useEffect(() => {
-      // Trigger animation on component mount
-      setAnimate(true);
-    }, []);
+    const Logouthandler = () => {
+        localStorage.removeItem('account');
+        toast.success("LogOut successful!");
+        dispatch(setUserData(null));
+    }
 
     return (
         <header className="flex items-center justify-between mx-auto px-5 py-2 relative">
@@ -80,10 +84,31 @@ const Header: React.FC = () => {
                         <NavLinks key={i} {...navItem} index={i} />
                     ))}
                 </ul>
-                <button className="relative inline-flex items-center justify-start px-4 py-2 overflow-hidden font-medium transition-all bg-gradient-to-r from-blue-600 to-purple-600 rounded-full hover:bg-white group border-2 border-blue-400">
-                    <span className="w-48 h-48 rounded rotate-[-40deg] bg-gradient-to-r from-blue-600 to-purple-600 absolute bottom-0 left-0 -translate-x-full ease-out duration-500 transition-all translate-y-full mb-9 ml-9 group-hover:ml-0 group-hover:mb-32 group-hover:translate-x-0"></span>
-                    <span className="relative w-full text-left text-black transition-colors duration-300 ease-in-out group-hover:text-white font-bold">Sign in</span>
-                </button>
+                {userData.userInfo ? (
+                    <div className="relative group">
+                        <img
+                            className="profile inline-flex object-cover border-4 border-indigo-600 rounded-full shadow-[1px_1px_0_0_rgba(0,0,0,1)] shadow-indigo-600/100 bg-indigo-50 text-indigo-600 h-10 w-10 cursor-pointer"
+                            src={userData.userInfo.avatar || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NzEyNjZ8MHwxfHNlYXJjaHwyfHxoZWFkc2hvdHxlbnwwfDB8fHwxNjk1ODE3MjEzfDA&ixlib=rb-4.0.3&q=80&w=1080"}
+                            alt="User Avatar"
+                            onClick={() => navigate(`/profile/${userData.userInfo.name}`)}
+                        />
+                        <div className='hidden group-hover:block absolute right-0 w-32 bg-white shadow-lg rounded-lg'>
+                            <ul className='py-2'>
+                                <li className='px-4 py-2 hover:bg-gray-200 cursor-pointer hover:text-red-600' onClick={() => Logouthandler()}>
+                                    Logout
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                ) : (
+                    <button className="relative inline-flex items-center justify-start px-4 py-2 overflow-hidden font-medium transition-all bg-gradient-to-r from-blue-600 to-purple-600 rounded-full hover:bg-white group border-2 border-blue-400"
+                        onClick={() => navigate('/login')}
+                    >
+                        <span className="w-48 h-48 rounded rotate-[-40deg] bg-gradient-to-r from-blue-600 to-purple-600 absolute bottom-0 left-0 -translate-x-full ease-out duration-500 transition-all translate-y-full mb-9 ml-9 group-hover:ml-0 group-hover:mb-32 group-hover:translate-x-0"></span>
+                        <span className="relative w-full text-left text-black transition-colors duration-300 ease-in-out group-hover:text-white font-bold">Sign in</span>
+                    </button>
+                )}
             </div>
         </header>
     );

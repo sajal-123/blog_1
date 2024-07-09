@@ -3,6 +3,8 @@ import { User } from "../models/user.model.js";
 import validator from "validator";
 import { uploadPicture } from "../middleware/UploadPictureMiddleware.js";
 import { fileRemover } from "../utils/fileRemover.js";
+import nodemailer from "nodemailer";
+import sendGridTransport from "nodemailer-sendgrid-transport";
 
 function validateEmail(email) {
   return validator.isEmail(email);
@@ -13,7 +15,6 @@ const generateAccessAndRefreshTokens = async (userId) => {
     const user = await User.findById(userId);
     const accessToken = user.generateAccessToken();
     const refreshToken = user.generateRefreshToken();
-
     user.refreshToken = refreshToken;
     // Disable validation before saving to avoid password validation errors
     await user.save({ validateBeforeSave: false });
@@ -29,6 +30,7 @@ const generateAccessAndRefreshTokens = async (userId) => {
 const SignUp = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
+    console.log(name, email, password);
 
     // Validate required fields
     if (!name || !email || !password) {
@@ -54,18 +56,27 @@ const SignUp = async (req, res, next) => {
     });
 
     // Fetch user details without sensitive information
-    const createdUser = await User.findById(newUser._id).select(
-      "-password -refreshToken"
-    );
+    const createdUser = await User.findById(newUser._id);
 
     if (!createdUser) {
       return res.status(500).json({ message: "Failed to register user" });
     }
-
+    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
+      createdUser._id
+    );
+    const loggedInUser = await User.findById(createdUser._id).select(
+      "-password -refreshToken"
+    );
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true, // The cookie only accessible by the web server
+      maxAge: 3600000, // 1 day
+    });
     // Respond with success message and user details
-    return res
-      .status(200)
-      .json({ createdUser, message: "User registered successfully" });
+    res.status(200).json({
+      user: loggedInUser,
+      accessToken,
+      message: "User Register SuccessFully",
+    });
   } catch (error) {
     next(error); // Pass error to the error handling middleware
   }
@@ -101,8 +112,15 @@ const Login = async (req, res, next) => {
     const loggedInUser = await User.findById(user._id).select(
       "-password -refreshToken"
     );
-
-    res.status(200).json({ user: loggedInUser, accessToken, refreshToken });
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true, // The cookie only accessible by the web server
+      maxAge: 3600000, // 1 day
+    });
+    res.status(200).json({
+      user: loggedInUser,
+      accessToken,
+      message: "User LoggedIn SuccessFully",
+    });
   } catch (error) {
     next(error); // Pass error to the error handling middleware
   }
@@ -170,7 +188,7 @@ const updatePictureProfile = async (req, res, next) => {
           let filename;
           let updatedUser = await User.findById(req.user._id);
           filename = updatedUser.avatar;
-          console.log(req.file.filename)
+          console.log(req.file.filename);
           if (filename) {
             fileRemover(filename);
           }
@@ -209,4 +227,50 @@ const updatePictureProfile = async (req, res, next) => {
   }
 };
 
-export { SignUp, Login, userProfile, updateProfile, updatePictureProfile };
+const ForgetPassword = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(400).json({ message: "Invalid email" });
+    }
+
+    const { refreshToken } = await generateAccessAndRefreshTokens(user._id);
+    console.log(process.env.SERVICEEMAIL);
+    console.log(process.env.SERVICEMAILPASSWORD);
+
+    const transporter = nodemailer.createTransport(
+      sendGridTransport({
+        auth: {
+          api_key: process.env.twelinAPI_KEY,
+        },
+      })
+    );
+
+    const info = await transporter.sendMail({
+      from: 'sajalytr@gmail.com',
+      to: email,
+      subject: "Sending Reset Email Code",
+      text: `Click the following link to reset your password: http://localhost:5173/reset_password/${refreshToken}`,
+    });
+    console.log("Message sent: %s", info.messageId);
+
+    res.json({
+      status: true,
+      message: "Email sent! Check your inbox for the reset link.",
+    });
+  } catch (error) {
+    console.error("ForgetPassword error:", error);
+    return res.status(500).json({ message: "Error sending email" });
+  }
+};
+
+export {
+  SignUp,
+  Login,
+  userProfile,
+  updateProfile,
+  updatePictureProfile,
+  ForgetPassword,
+};

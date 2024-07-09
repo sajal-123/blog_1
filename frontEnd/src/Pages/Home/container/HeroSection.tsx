@@ -9,9 +9,9 @@ function HeroSection() {
     return (
         <div className='md:flex flex-row-reverse items-center justify-center gap-4 md:h-[80vh] px-2 bg-hero-gradient w-full' >
             <Image />
-            <div className='left flex flex-col items-center gap-6 text-start w-full md:w-[50%]'>
-                <h1 className='lg:text-5xl xl:text-6xl  md:text-5xl text-3xl font-bold font-Roboto mb-6'>TECH CHRONICLES:</h1>
-                <h2 className='lg:text-4xl xl:text-4xl md:text-3xl text-xl font-bold font-Roboto pl-6'>
+            <div className='left flex flex-col items-center gap-3 md:gap-4 lg:gap-6 text-start w-full md:w-[50%]'>
+                <h1 className='lg:text-5xl xl:text-6xl  md:text-4xl text-3xl font-bold font-Roboto mb-6'>TECH CHRONICLES:</h1>
+                <h2 className='lg:text-3xl xl:text-4xl md:text-2xl text-xl font-bold font-Roboto pl-6'>
                     Exploring Cutting-Edge Tech: Insights, Trends, and Innovations for Today's Digital World
                 </h2>
                 <p className='lg:text-base xl:text-xl text-gray-700 md:text-lg text-base font-Roboto pl-6 text-center'>
