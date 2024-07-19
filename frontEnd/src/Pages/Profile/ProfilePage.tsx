@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { RootState } from '../store/index.ts'; // Adjust the import path as needed
+import { RootState } from '../../store/index';// Adjust the import path as needed
 
 const ProfilePage: React.FC = () => {
     const userData = useSelector((state: RootState) => state.user);

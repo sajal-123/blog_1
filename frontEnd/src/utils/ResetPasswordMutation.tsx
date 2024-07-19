@@ -1,13 +1,13 @@
 import { useMutation } from '@tanstack/react-query';
-import { SignUp } from '../services/index/User';
+import { reserPassword } from '../services/index/User';
 import { useDispatch } from 'react-redux';
 import { setUserData } from '../store/reducers/UserReducer';
 
-const useSignUpMutation = () => {
+const useResetMutation = () => {
     const dispatch = useDispatch();
     return useMutation({
-        mutationFn: ({ name, email, password }: { name: string, email: string, password: string }) => {
-            return SignUp({ name, email, password });
+        mutationFn: ({ password,token='' }: { password: string,token:string }) => {
+            return reserPassword({password,token} );
         },
         onSuccess: (data) => {
             console.log('Success:', data);
@@ -21,4 +21,4 @@ const useSignUpMutation = () => {
     });
 };
 
-export default useSignUpMutation;
+export default useResetMutation;

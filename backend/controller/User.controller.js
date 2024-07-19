@@ -4,7 +4,7 @@ import validator from "validator";
 import { uploadPicture } from "../middleware/UploadPictureMiddleware.js";
 import { fileRemover } from "../utils/fileRemover.js";
 import nodemailer from "nodemailer";
-import sendGridTransport from "nodemailer-sendgrid-transport";
+import bcrypt from 'bcryptjs';
 
 function validateEmail(email) {
   return validator.isEmail(email);
@@ -96,7 +96,8 @@ const Login = async (req, res, next) => {
     if (!user) {
       return res.status(400).json({ message: "Invalid email or password" });
     }
-
+    const after = await bcrypt.compare(password, user.password);
+    console.log(after)
     // Verify the password
     const isPasswordValid = await user.isPasswordCorrect(password);
     if (!isPasswordValid) {
@@ -237,32 +238,73 @@ const ForgetPassword = async (req, res, next) => {
     }
 
     const { refreshToken } = await generateAccessAndRefreshTokens(user._id);
-    console.log(process.env.SERVICEEMAIL);
-    console.log(process.env.SERVICEMAILPASSWORD);
-
-    const transporter = nodemailer.createTransport(
-      sendGridTransport({
-        auth: {
-          api_key: process.env.twelinAPI_KEY,
-        },
-      })
-    );
-
-    const info = await transporter.sendMail({
-      from: 'sajalytr@gmail.com',
-      to: email,
-      subject: "Sending Reset Email Code",
-      text: `Click the following link to reset your password: http://localhost:5173/reset_password/${refreshToken}`,
+    user.refreshToken = refreshToken;
+    user.save();
+    const auth = nodemailer.createTransport({
+      service: "gmail",
+      secure: true,
+      port: 465,
+      auth: {
+        user: process.env.SERVICEEMAIL,
+        pass: process.env.SERVICEMAILPASSWORD,
+      },
     });
-    console.log("Message sent: %s", info.messageId);
 
-    res.json({
-      status: true,
+    const receiver = {
+      from: "sajalytr@gmail.com",
+      to: email,
+      subject: "Node Js Mail Testing!",
+      text: `${process.env.FrontEndHost}/resetPassword?token=${refreshToken}`,
+    };
+
+    auth.sendMail(receiver, (error, emailResponse) => {
+      if (error) throw error;
+      console.log("success!");
+      response.end();
+    });
+    res.status(200).json({
       message: "Email sent! Check your inbox for the reset link.",
     });
   } catch (error) {
     console.error("ForgetPassword error:", error);
     return res.status(500).json({ message: "Error sending email" });
+  }
+};
+const ResetPassword = async (req, res, next) => {
+  try {
+    const { user } = req; // Assuming `req.user` holds the user object
+    const { password } = req.body; // Extracting `password` from request body
+
+    if (!user) {
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
+
+    user.password = password;
+    await user.save();
+
+    // Generate new access and refresh tokens
+    const { accessToken } = await generateAccessAndRefreshTokens(user._id);
+
+    // Respond with the updated user object excluding sensitive fields
+    const loggedInUser = await User.findById(user._id).select(
+      "-password -refreshToken"
+    );
+
+    // Set the accessToken in a HTTP-only cookie
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true, // The cookie only accessible by the web server
+      maxAge: 3600000, // 1 day in milliseconds
+    });
+
+    // Respond with success message and logged in user details
+    res.status(200).json({
+      user: loggedInUser,
+      accessToken,
+      message: "Password Reset Successfully",
+    });
+  } catch (error) {
+    console.error("Error in reset password:", error);
+    return res.status(500).json({ message: "Error resetting password" });
   }
 };
 
@@ -273,4 +315,5 @@ export {
   updateProfile,
   updatePictureProfile,
   ForgetPassword,
+  ResetPassword,
 };

@@ -15,11 +15,14 @@ interface User {
 
 interface UserState {
     userInfo: User | null;
+    loginInfo: boolean
 }
 const userInfoFromStorage = localStorage.getItem('account') ? JSON.parse(localStorage.getItem('account')!) : null
 
 const UserinitialState: UserState = {
     userInfo: userInfoFromStorage,
+    loginInfo: userInfoFromStorage !== null
+
 };
 
 const userSlice = createSlice({
@@ -28,9 +31,14 @@ const userSlice = createSlice({
     reducers: {
         setUserData: (state, action: PayloadAction<User>) => {
             state.userInfo = action.payload;
+            state.loginInfo = true;
+            localStorage.setItem('account', JSON.stringify(state.userInfo));
+
         },
         clearUserData: (state) => {
             state.userInfo = null;
+            state.loginInfo = false;
+            localStorage.removeItem('account');
         },
     },
 });

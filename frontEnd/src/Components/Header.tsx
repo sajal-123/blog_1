@@ -1,4 +1,4 @@
-import React, {  useContext } from 'react';
+import React, {  useContext, useEffect } from 'react';
 import { CiMenuFries } from "react-icons/ci";
 import { IoMdClose } from "react-icons/io";
 import { react } from '../constants/index'
@@ -7,7 +7,7 @@ import NavContext from '../context/NavContext'
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { setUserData } from '../store/reducers/UserReducer';
+import { clearUserData, setUserData } from '../store/reducers/UserReducer';
 
 interface NavItems {
     title: string;
@@ -55,15 +55,15 @@ const Header: React.FC = () => {
     const userData = useSelector(state => state.user);
     const navigate = useNavigate();
 
+
     const { isNavbarVisible, setIsNavbarVisible } = useContext(NavContext)
 
     const handleNavbar = () => {
         setIsNavbarVisible(!isNavbarVisible);
     };
     const Logouthandler = () => {
-        localStorage.removeItem('account');
-        toast.success("LogOut successful!");
-        dispatch(setUserData(null));
+        dispatch(clearUserData());
+        toast.success("Logout successful!");
     }
 
     return (

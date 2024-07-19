@@ -22,7 +22,7 @@ export const signInSchema = z.object({
       /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
       "Email must be a valid format"
     ),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  password: z.string().min(2, "Password must be at least 6 characters"),
 });
 
 export type SignUpInput = z.infer<typeof signInSchema>;

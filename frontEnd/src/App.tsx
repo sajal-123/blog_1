@@ -8,6 +8,7 @@ import ProfilePage from './Pages/Profile/ProfilePage';
 import { Toaster } from 'sonner';
 import LoginPage from './Pages/Login/LoginPage';
 import ForgetPassword from './Pages/ForgetPassword/ForgetPassword';
+import ResetPassword from './Pages/ForgetPassword/ResetPassword';
 // Define routes
 
 
@@ -22,7 +23,8 @@ function App() {
           <Route path="/register" element={<RegisterPage />} /> // Register route
           <Route path="/profile/:name" element={<ProfilePage />} /> // profile route
           <Route path="/login" element={<LoginPage />} /> // Login route
-          <Route path="/forget-password" element={<ForgetPassword />} /> // Login route
+          <Route path="/forget-password" element={<ForgetPassword />} /> // forget route
+          <Route path="/resetPassword" element={<ResetPassword />} /> // reset route
         </Routes>
       </div>
     </NavContextProvider>

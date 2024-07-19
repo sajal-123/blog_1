@@ -5,8 +5,8 @@ import { useForm } from 'react-hook-form';
 import { FaRegEye } from "react-icons/fa6";
 import { FaRegEyeSlash } from "react-icons/fa6";
 import { Link, useNavigate } from 'react-router-dom';
-import useLoginMutation from '../../utils/LoginMutation';
 import { useSelector } from 'react-redux';
+import useLoginMutation from '../../utils/LoginMutation';
 
 function LoginPage() {
     const navigate = useNavigate();

@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { forgetPassword } from '../../services/index/User';
-import { useNavigate } from 'react-router-dom';
 
 function ForgetPassword() {
-    const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [error, setError] = useState('');
 
@@ -22,9 +20,9 @@ function ForgetPassword() {
             // Send GET request to your backend for password recovery
             forgetPassword(email);
             console.log('Password reset request sent successfully:');
-        } catch (error: any) {
+        } catch (error) {
             // Handle error (display error message to the user)
-            console.error('Error sending password reset request:', error.message);
+            console.error('Error sending password reset request:', error);
         }
     };
 

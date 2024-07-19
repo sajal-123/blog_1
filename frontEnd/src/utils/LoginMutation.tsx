@@ -13,7 +13,6 @@ const useLoginMutation = () => {
             console.log('Success:', data);
             if (data && data.user) {
                 dispatch(setUserData(data.user));
-                localStorage.setItem('account', JSON.stringify(data.user));
             }
         },
         onError: (error) => {

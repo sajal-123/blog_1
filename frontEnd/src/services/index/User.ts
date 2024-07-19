@@ -35,7 +35,6 @@ const SignUp = async ({ name, email, password }: SignUpParams) => {
 const Login = async ({ email, password }: LoginParams) => {
     try {
         axios.defaults.withCredentials = true;
-        axios.defaults.withCredentials = true;
         const response = await axios.post(`${url}/api/users/login`, {
             email,
             password,
@@ -54,7 +53,6 @@ const Login = async ({ email, password }: LoginParams) => {
 const forgetPassword = async (email: string) => {
     try {
         axios.defaults.withCredentials = true;
-        axios.defaults.withCredentials = true;
         const response = await axios.post(`${url}/api/users/forgetPassword`, {
             email,
         });
@@ -69,5 +67,23 @@ const forgetPassword = async (email: string) => {
         throw new Error(error.message);
     }
 };
+const reserPassword = async ({password,token}:{password: string,token:string}) => {
+    try {
+        axios.defaults.withCredentials = true;
+        const response = await axios.post(`${url}/api/users/resetPassword`, {
+            password,
+            token
+        });
+        toast.success(response.data.message);
+        return response.data;
+    } catch (error: any) {
+        if (error.response && error.response.data.message) {
+            toast.error(error.response.data.message);
+            throw new Error(error.response.data.message);
+        }
+        toast.error(error.message);
+        throw new Error(error.message);
+    }
+};
 
-export { SignUp, Login, forgetPassword };
+export { SignUp, Login, forgetPassword,reserPassword };
