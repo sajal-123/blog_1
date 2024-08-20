@@ -54,9 +54,8 @@ const NavLinks: React.FC<NavItems & { index: number }> = ({ title, link, type, i
 
 const Header: React.FC = () => {
     const dispatch = useDispatch();
-    const userData = useTypedSelector(state => state.userInfo);
+    const userData = useTypedSelector(state => state.user.userInfo);
     const navigate = useNavigate();
-
 
     const { isNavbarVisible, setIsNavbarVisible } = useContext(NavContext)
 
