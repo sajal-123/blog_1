@@ -1,14 +1,14 @@
-import React, {  useContext, useEffect } from 'react';
+import React, {  useContext } from 'react';
 import { CiMenuFries } from "react-icons/ci";
 import { IoMdClose } from "react-icons/io";
 import { react } from '../constants/index'
 import { MdKeyboardArrowDown } from "react-icons/md";
 import NavContext from '../context/NavContext'
-import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { clearUserData, setUserData } from '../store/reducers/UserReducer';
-
+import { useDispatch, useSelector, TypedUseSelectorHook } from 'react-redux';
+import { clearUserData } from '../store/reducers/UserReducer';
+import { UserState } from '../store/reducers/UserReducer';
 interface NavItems {
     title: string;
     link: string;
@@ -23,6 +23,8 @@ const navbarConfigInfo: NavItems[] = [
     { title: 'Pricing', link: '/pricing', type: 'link' },
     { title: 'Faq', link: '/faq', type: 'link' },
 ];
+
+const useTypedSelector: TypedUseSelectorHook<UserState> = useSelector;
 const NavLinks: React.FC<NavItems & { index: number }> = ({ title, link, type, items, index }) => {
     return type === 'link' ? (
         <li key={index} className="relative group">
@@ -52,7 +54,7 @@ const NavLinks: React.FC<NavItems & { index: number }> = ({ title, link, type, i
 
 const Header: React.FC = () => {
     const dispatch = useDispatch();
-    const userData = useSelector(state => state.user);
+    const userData = useTypedSelector(state => state.userInfo);
     const navigate = useNavigate();
 
 
@@ -84,13 +86,13 @@ const Header: React.FC = () => {
                         <NavLinks key={i} {...navItem} index={i} />
                     ))}
                 </ul>
-                {userData.userInfo ? (
+                {userData ? (
                     <div className="relative group">
                         <img
                             className="profile inline-flex object-cover border-4 border-indigo-600 rounded-full shadow-[1px_1px_0_0_rgba(0,0,0,1)] shadow-indigo-600/100 bg-indigo-50 text-indigo-600 h-10 w-10 cursor-pointer"
-                            src={userData.userInfo.avatar || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NzEyNjZ8MHwxfHNlYXJjaHwyfHxoZWFkc2hvdHxlbnwwfDB8fHwxNjk1ODE3MjEzfDA&ixlib=rb-4.0.3&q=80&w=1080"}
+                            src={userData.avatar || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NzEyNjZ8MHwxfHNlYXJjaHwyfHxoZWFkc2hvdHxlbnwwfDB8fHwxNjk1ODE3MjEzfDA&ixlib=rb-4.0.3&q=80&w=1080"}
                             alt="User Avatar"
-                            onClick={() => navigate(`/profile/${userData.userInfo.name}`)}
+                            onClick={() => navigate(`/profile/${userData.name}`)}
                         />
                         <div className='hidden group-hover:block absolute right-0 w-32 bg-white shadow-lg rounded-lg'>
                             <ul className='py-2'>

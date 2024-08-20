@@ -1,5 +1,5 @@
 import Image from "./Image";
-import React, { useState, useContext } from 'react';
+import React, {  useContext } from 'react';
 import NavContext from '../../../context/NavContext'
 
 

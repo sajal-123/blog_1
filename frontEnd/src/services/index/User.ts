@@ -86,4 +86,8 @@ const reserPassword = async ({password,token}:{password: string,token:string}) =
     }
 };
 
-export { SignUp, Login, forgetPassword,reserPassword };
+const updateProfilePicture=async()=>{
+
+}
+
+export { SignUp, Login, forgetPassword,reserPassword, updateProfilePicture };

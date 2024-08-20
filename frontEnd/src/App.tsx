@@ -9,6 +9,7 @@ import { Toaster } from 'sonner';
 import LoginPage from './Pages/Login/LoginPage';
 import ForgetPassword from './Pages/ForgetPassword/ForgetPassword';
 import ResetPassword from './Pages/ForgetPassword/ResetPassword';
+import { NotFoundPage } from './Pages/404';
 // Define routes
 
 
@@ -25,6 +26,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} /> // Login route
           <Route path="/forget-password" element={<ForgetPassword />} /> // forget route
           <Route path="/resetPassword" element={<ResetPassword />} /> // reset route
+          <Route path="*" element={<NotFoundPage />} />  // for not getting the valid route
         </Routes>
       </div>
     </NavContextProvider>

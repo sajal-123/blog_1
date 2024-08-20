@@ -1,5 +1,5 @@
 import React from 'react';
-import {Laptop} from '../../../constants/index'
+import {Laptop} from '../../../constants/index.ts'
 function CTA() {
     return (
         <div >

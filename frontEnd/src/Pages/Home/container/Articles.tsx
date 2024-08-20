@@ -1,6 +1,6 @@
 import React from 'react'
 import Article from '../../../Components/Article'
-import { Laptop } from '../../../constants/index'
+import { Laptop } from '../../../constants/index.ts'
 function Articles() {
     return (
         <div className=' w-full flex flex-col px-5 py-10  bg-article-gradient'>

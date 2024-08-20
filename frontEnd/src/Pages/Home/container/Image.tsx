@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import NavContext from '../../../context/NavContext'
-import { HeroRightImage } from '../../../constants/index'
+import { HeroRightImage } from '../../../constants/index.ts'
 
 function Image() {
 

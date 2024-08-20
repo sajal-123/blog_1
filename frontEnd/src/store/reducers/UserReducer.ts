@@ -13,7 +13,7 @@ interface User {
     __v: number;
 }
 
-interface UserState {
+export interface UserState {
     userInfo: User | null;
     loginInfo: boolean
 }
